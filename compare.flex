@@ -16,7 +16,7 @@ import static frontend.Token.Type.*;
 %column
 
 %{
-	/* These two methods are for the convenience of rules to create toke objects.
+	/* These two methods are for the convenience of rules to create token objects.
 	* If you do not want to use them, delete them
 	* otherwise add the code in 
 	*/
@@ -42,6 +42,7 @@ WhiteSpace = [ ] | \t | \f | \n | \r
 %%
 /* put in your rules here.    */
 
+// Keywords
 "boolean" { return token(BOOLEAN); }
 "break" { return token(BREAK);}
 "else" { return token(ELSE);}
@@ -90,7 +91,6 @@ WhiteSpace = [ ] | \t | \f | \n | \r
 \"[^\"\n]*\"		{ return token(STRING_LITERAL, yytext().substring(1, yytext().length() - 1)); }
 
 {WhiteSpace} {}
-
 
 /* You don't need to change anything below this line. */
 .							{ throw new Error("unexpected character '" + yytext() + "'"); }
