@@ -32,111 +32,107 @@
 
 Module = MODULE ID LCURLY Imports Declarations RCURLY ;
 
-Imports = Import Imports
+Imports = IMPORT ID SEMICOLON
         | 
         ;
 
-Import = IMPORT ID SEMICOLON ;
 
 Declarations = Declaration Declarations
              |
              ;
 
-Declaration = FuncDeclaration
+Declaration = FunctDeclaration
             | FieldDeclaration
             | TypeDeclaration
             ;
 
-FuncDeclaration = AccessibilitySpecifier TypeName ID LPAREN ParameterList RPAREN LCURLY StatementLists RCURLY ;
+FunctDeclaration = AccSpecifier TypeName ID LPAREN ParamList RPAREN LCURLY StmtLists RCURLY ;
 
-StatementLists = Statement StatementLists
+StmtLists = StmtLists Stmt
                |
                ;
 
-FieldDeclaration = AccessibilitySpecifier TypeName ID SEMICOLON ;
+FieldDeclaration = AccSpecifier TypeName ID SEMICOLON ;
 
-TypeDeclaration = AccessibilitySpecifier TYPE ID EQL STRING_LITERAL SEMICOLON ;
+TypeDeclaration = AccSpecifier TYPE ID EQL STRING_LITERAL SEMICOLON ;
 
-AccessibilitySpecifier = PUBLIC
-                       |
-                       ;
+AccSpecifier = PUBLIC
+             |
+             ;
 
-TypeName = PrimitiveType
-         |  ArrayType
+TypeName = Primitive
+         |  Array
          |  ID
          ;
 
-PrimitiveType = VOID
-              | BOOLEAN
-              | INT
-              ;
+Primitive = VOID
+          | BOOLEAN
+          | INT
+          ;
 
-ArrayType = ArrayType LBRACKET RBRACKET
-          | PrimitiveType LBRACKET RBRACKET
+Array = Primitive LBRACKET RBRACKET
+          | Array LBRACKET RBRACKET
           | ID LBRACKET RBRACKET
           ;
 
-ParameterList = NonEmptyParameterList
-              |
-              ;
-
-NonEmptyParameterList = Parameter COMMA NonEmptyParameterList
-                      |  Parameter
-                      ;
-
-Parameter = TypeName ID ;
-
-Statement = Localvardeclaration 
-          | BlockStatement
-          | IfStatement
-          | WhileStatement
-          | BreakStatement
-          | ReturnStatement
-          | ExpressionStatement
+ParamList = ParamList Param COMMA
+          | 
           ;
 
-Localvardeclaration = TypeName ID SEMICOLON ;
+Param = TypeName ID ;
 
-BlockStatement = LCURLY StatementList RCURLY ;
+
+Stmt = LocalVarDecl 
+          | BlockStmt
+          | IfStmt
+          | WhileStmt
+          | BreakStmt
+          | ReturnStmt
+          | ExpressionStmt
+          ;
+
+LocalVarDecl = TypeName ID SEMICOLON ;
+
+BlockStmt = LCURLY StmtList RCURLY ;
 				
-StatementList = Statement StatementList
-              |
-              ;
+StmtList = Stmt StmtList
+         |
+         ;
 
-IfStatement = IF LPAREN Expression RPAREN Statement ELSE Statement IfTail ;
+IfStmt = IF LPAREN Expression RPAREN Stmt ELSE Stmt IfTail ;
 
-IfTail = ELSE Statement
+IfTail = ELSE Stmt
        |
        ;
 
-WhileStatement = WHILE LPAREN Expression RPAREN Statement ;
+WhileStmt = WHILE LPAREN Expression RPAREN Stmt ;
 
-BreakStatement = BREAK SEMICOLON ;
+BreakStmt = BREAK SEMICOLON ;
 
-ReturnStatement = RETURN SEMICOLON
+ReturnStmt = RETURN SEMICOLON
                 | RETURN Expression SEMICOLON
                 ;
 
-ExpressionStatement = Expression SEMICOLON ;
+ExpressionStmt = Expression SEMICOLON ;
 
 Expression = Assignment
            | RHSExpression
            ;
 
-Assignment = LHSExpression EQL Expression ;
+Assignment = LHSExpr EQL Expression ;
 
-LHSExpression = ID
+LHSExpr = ID
               | ArrayAccess
               ;
 
 ArrayAccess = ID LBRACKET Expression RBRACKET
             | ArrayAccess LBRACKET Expression RBRACKET ;
 
-RHSExpression = ArithmeticExpression
-              | ArithmeticExpression ComparisonOperator ArithmeticExpression
+RHSExpression = ArithExpr
+              | ArithExpr CompareOperator ArithExpr
               ;
 
-ComparisonOperator = EQEQ
+CompareOperator = EQEQ
                    | NEQ
                    | LT
                    | LEQ
@@ -144,49 +140,49 @@ ComparisonOperator = EQEQ
                    | GEQ
                    ;
 
-ArithmeticExpression = ArithmeticExpression AdditiveOperator Term
+ArithExpr = ArithExpr AddOperator Term
                      | Term
                      ;
 
-AdditiveOperator = PLUS
+AddOperator = PLUS
                  | MINUS
                  ;
 
-Term = Term MultiplicativeOperator Factor
+Term = Term MultOperator Factor
      | Factor
      ;
 
-MultiplicativeOperator = TIMES
-                       | DIV
-                       | MOD
-                       ;
+MultOperator = TIMES
+             | DIV
+             | MOD
+             ;
 
 Factor = MINUS Factor
-       | PrimaryExpression
+       | PriExpr
        ;                 
 
-PrimaryExpression = LHSExpression
-                  | FunctionCall
-                  | ArrayExpression
-                  | STRING_LITERAL
-                  | INT_LITERAL
-                  | Boolean
-                  | ParenthesizedExpression
-                  ;
+PriExpr = LHSExpr
+        | FunctCall
+        | ArrayExpr
+        | STRING_LITERAL
+        | INT_LITERAL
+        | Boolean
+        | ParenthesizedExpr
+        ;
 
-FunctionCall = ID LPAREN ExpressionLists RPAREN ;
+FunctCall = ID LPAREN ExprLists RPAREN ;
 
-ExpressionLists = NonEmptyExpressionList
-                |
-                ;
+ExprLists = ExprList
+          |
+          ;
                  
-NonEmptyExpressionList = Expression COMMA NonEmptyExpressionList
-                       | Expression
-                       ;
+ExprList = Expression COMMA ExprList
+         | Expression
+         ;
 
-ArrayExpression = LBRACKET NonEmptyExpressionList RBRACKET ;
+ArrayExpr = LBRACKET ExprList RBRACKET ;
 
-ParenthesizedExpression = LPAREN Expression RPAREN ;
+ParenthesizedExpr = LPAREN Expression RPAREN ;
 
 Boolean = TRUE
         | FALSE
