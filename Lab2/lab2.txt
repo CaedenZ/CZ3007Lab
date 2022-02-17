@@ -1,0 +1,139 @@
+Module --> MODULE ID { Imports Declarations }
+
+Imports --> Import Imports
+        | lambda
+
+Import --> IMPORT ID ;
+
+Declarations --> Declaration Declarations
+              |  lambda
+
+Declaration --> FuncDeclaration
+              | FieldDeclaration
+              | TypeDeclaration            
+
+FuncDeclaration --> AccessibilitySpecifier TypeName ID ; ( ParameterList ) { StatementLists }
+
+StatementLists --> Statement StatementLists
+                | lambda
+
+FieldDeclaration --> AccessibilitySpecifier TypeName ID ;
+
+TypeDeclaration --> AccessibilitySpecifier TYPE ID = STRING_LITERAL;
+
+AccessibilitySpecifier --> PUBLIC
+                        | lambda
+
+TypeName --> PrimitiveType
+          |  ArrayType
+          |  ID
+
+PrimitiveType --> VOID
+                | BOOLEAN
+                | INT
+
+ArrayType --> ArrayType [ ]
+           | PrimitiveType [ ]
+           | ID [ ]
+
+* note - original will have problem
+(according to lab tech, this will no more have shift reduce conflict.)
+
+//tutorial 2 Qn2
+ParameterList --> NonEmptyParameterList
+               |  lambda
+
+NonEmptyParameterList --> Parameter COMMA NonEmptyParameterList
+                       |  Parameter
+
+Parameter --> TypeName ID
+
+Statement --> Localvardeclaration 
+            | BlockStatement
+            | IfStatement
+            | WhileStatement
+            | BreakStatement
+            | ReturnStatement
+            | ExpressionStatement
+
+Localvardeclaration --> TypeName ID ;
+
+//StatementList already can be empty
+BlockStatement --> { StatementList }
+
+//need to check this...
+IfStatement --> IF ( Expression ) Statement ELSE Statement IfTail
+IfTail --> ELSE Statement
+         | lambda
+
+WhileStatement --> while ( Expression ) Statement
+
+BreakStatement --> break ; 
+
+ReturnStatement --> return ReturnTail
+
+ReturnTail --> Expression ;
+            | lambda
+
+ExpressionStatement --> Expression ; 
+
+Expression --> Assignment
+             | RHSexpression
+
+Assignment --> LHSexpression = Expression
+
+LHSexpression --> ID
+             |  ArrayAccess
+
+ArrayAccess --> LHSexpression [ Expression ]
+
+RHSexpression --> ArithmeticExpression RHStail
+
+RHStail --> ComparisonOperator ArithmeticExpression
+           | lambda
+
+ComparisonOperator --> EQEQ
+                    | NEQ
+                    | LT
+                    | LEQ
+                    | GT
+                    | GEQ
+
+ArithmeticExpression --> ArithmeticExpression AdditiveOperator Term
+                       | Term
+
+AdditiveOperator --> PLUS
+                   | MINUS
+
+Term --> Term MultiplicativeOperator Factor
+      | Factor
+
+MultiplicativeOperator --> TIMES
+						| DIV
+						| MOD
+
+Factor --> MINUS Factor
+        | PrimaryExpression
+
+PrimaryExpression --> LHSexpression
+                    | FunctionCall
+                    | ArrayExpression
+                    | STRING_LITERAL
+                    | INT_LITERAL
+                    | Boolean
+                    | ParenthesizedExpression
+
+FunctionCall --> ID ( ExpressionLists )
+
+ExpressionLists --> NonEmptyExpressionList
+                 | lambda
+
+NonEmptyExpressionList --> Expression COMMA NonEmptyExpressionList
+                        | Expression
+
+ArrayExpression --> [ NonEmptyExpressionList ]
+
+ParenthesizedExpression --> ( Expression )
+
+Boolean --> TRUE
+          | FALSE
